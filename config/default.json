@@ -1,13 +1,18 @@
 {
   "port": "env(PORT)",
   "settings": {
+    "debug": true,
     "loggerFormat": "tiny",
     "session": {
       "store": "@foal/typeorm"
     }
   },
   "database": {
-    "type": "better-sqlite3",
-    "database": "./db.sqlite3"
+    "type": "mysql",
+    "host": "localhost",
+    "port": 0,
+    "username": "env(DB_USERNAME)",
+    "password": "env(DB_PASSWORD)",
+    "database": "db_foal_jshop"
   }
 }

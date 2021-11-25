@@ -8,7 +8,13 @@ export class AppController implements IAppController {
     controller('/api', ApiController),
   ];
 
+  /**
+   * @method init - Es llamado una vez se ejecuta la aplicación.
+   */
   async init() {
-    await createConnection();
+    await Promise.all([
+      createConnection(),
+      // Something
+    ])
   }
 }

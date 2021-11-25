@@ -13,9 +13,14 @@ async function main() {
   const app = await createApp(AppController);
 
   const httpServer = http.createServer(app);
-  const port = Config.get('port', 'number', 3001);
-  httpServer.listen(port, () => displayServerURL(port));
+  const port = Config.get('port', 'number', 4000);
+  httpServer.listen(port, () => {
+    console.log(`Server running on port: ${displayServerURL(port)}`);
+  });
 }
 
 main()
-  .catch(err => { console.error(err.stack); process.exit(1); });
+  .catch(err => { 
+    console.error(err.stack);
+    process.exit(1); 
+  });
