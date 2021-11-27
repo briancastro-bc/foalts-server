@@ -1,34 +1,69 @@
 import { hashPassword } from '@foal/core';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserWithPermissions } from '@foal/typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Profile } from './profile.entity';
 
 @Entity({
   name: 'users'
 })
-export class User extends BaseEntity {
+export class User extends UserWithPermissions {
 
-  @PrimaryGeneratedColumn('uuid')
-  uid: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+    type: 'varchar',
+    length: 70,
+    nullable: false
+  })
   email: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 450,
+    nullable: true
+  })
   password: string;
 
-  @Column()
+  @Column({
+    type: 'char',
+    length: 40,
+    nullable: false
+  })
   name: string;
 
-  @Column()
+  @Column({
+    type: 'char',
+    length: 60,
+    nullable: false
+  })
   lastName: string;
 
-  @Column()
+  @Column({
+    type: 'boolean',
+    default: false
+  })
   isVerify: boolean;
 
-  @Column()
-  createdAt: string;
+  @Column({
+    type: 'timestamp',
+    default: Date.now()
+  })
+  createdAt: Date;
 
-  async setPassword(password: string) {
+  @OneToOne(() => Profile, profile => profile.user, {
+    primary: true,
+    nullable: true
+  })
+  @JoinColumn()
+  profile: Profile;
+
+  async setPassword(password: string): Promise<void> {
     this.password = await hashPassword(password);
   }
 
 }
+
+export { Permission, Group } from '@foal/typeorm';

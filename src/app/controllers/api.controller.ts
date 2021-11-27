@@ -1,6 +1,12 @@
-import { Context, Get, HttpResponseOK } from '@foal/core';
+import { Context, Get, HttpResponseOK, IAppController, controller } from '@foal/core';
 
-export class ApiController {
+import { AuthController } from './public/auth.controller';
+
+export class ApiController implements IAppController {
+
+  subControllers = [
+    controller('/auth', AuthController)
+  ];
 
   @Get('/')
   index(ctx: Context) {
