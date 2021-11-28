@@ -28,24 +28,30 @@ export class AuthService {
         return user;
     }
 
-    public async signup(email: string, password: string, name: string, lastName: string): Promise<any> {
-        if(await isCommon(password)) return null;
+    public async signup(email: string, password: string, name: string, lastName: string, phonePrefixCode: string, cellphoneNumber: string): Promise<any> {
+        //if(await isCommon(password)) return null;
         let user = await User.findOne({
             email: email
         });
         if(user) return null;
         try {
+            let profile: Profile = new Profile();
             user = new User();
             user.email = email;
             await user.setPassword(password);
             user.name = name;
             user.lastName = lastName;
-
+            profile.phonePrefixCode = phonePrefixCode;
+            profile.cellphoneNumber = cellphoneNumber;
+            profile.user = user;
+            user.profile = profile;
+            
+            await profile.save();
             await user.save();
 
             return user;
         } catch(e: unknown) {
-            return null;
+            throw e;
         }
     }
 

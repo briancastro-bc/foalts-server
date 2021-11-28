@@ -28,10 +28,13 @@ export class JwtService {
 
     public async decodeToken(encoded: string, validate: boolean=true): Promise<any> {
         if(!validate) {
-            const decoded: any = decode(encoded, {
-                complete: true,
-                json: true
-            });
+            const decoded: any = await promisify(decode as any)(
+                encoded, 
+                {
+                    complete: true,
+                    json: true
+                }
+            );
             return decoded;
         }
         try {

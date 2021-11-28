@@ -45,41 +45,6 @@ export class Profile extends BaseEntity {
   })
   picture: string;
 
-  @Column({
-    type: 'char',
-    length: 5,
-    nullable: false
-  })
-  country: string;
-
-  @Column({
-    type: 'char',
-    length: 5,
-    nullable: false
-  })
-  city: string;
-
-  @Column({
-    type: 'char',
-    length: 15,
-    nullable: false
-  })
-  postalCode: string;
-
-  @Column({
-    type: 'varchar',
-    length: 70,
-    nullable: false
-  })
-  address: string;
-
-  @Column({
-    type: 'char',
-    length: 30,
-    nullable: true
-  })
-  street: string;
-
   @OneToOne(() => User, user => user.profile, {
     primary: true,
     nullable: true

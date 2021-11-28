@@ -48,7 +48,7 @@ export class AuthController {
         expiresIn: "15m",
       }
     );
-    return new HttpResponseOK({ accessToken: accessToken });
+    return new HttpResponseOK({ accessToken });
   }
 
   @Post("/signup")
@@ -60,10 +60,13 @@ export class AuthController {
       ctx.request.body.email,
       ctx.request.body.password,
       ctx.request.body.name,
-      ctx.request.body.lastName
+      ctx.request.body.lastName,
+      ctx.request.body.phonePrefixCode,
+      ctx.request.body.cellphoneNumber
     );
     if(!newUser)
-      return new HttpResponseBadRequest({ message: "E-mail exists on the database" });
+      return new HttpResponseBadRequest({ message: "E-mail exists or password is too common" });
+    // TODO: Resolve JWT RSA Key error.
     const accessToken: string = await this.jwtService.newToken(
       {
         iss: "https://j-shop.com",

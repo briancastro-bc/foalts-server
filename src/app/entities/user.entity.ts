@@ -49,13 +49,13 @@ export class User extends UserWithPermissions {
 
   @Column({
     type: 'timestamp',
-    default: Date.now()
+    nullable: true
   })
   createdAt: Date;
 
   @OneToOne(() => Profile, profile => profile.user, {
     primary: true,
-    nullable: true
+    nullable: true,
   })
   @JoinColumn()
   profile: Profile;

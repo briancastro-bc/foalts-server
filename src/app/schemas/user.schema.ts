@@ -4,9 +4,11 @@ export const userSignupSchema: object = {
         email: { type: 'string', format: 'email' },
         password: { type: 'string' },
         name: { type: 'string' },
-        lastName: { type: 'string' }
+        lastName: { type: 'string' },
+        phonePrefixCode: { type: 'string' },
+        cellphoneNumber: { type: 'string' }
     },
-    required: ['email', 'password', 'name', 'lastName'],
+    required: ['email', 'password', 'name', 'lastName', 'phonePrefixCode', 'cellphoneNumber'],
     type: 'object'
 }
 

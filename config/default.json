@@ -5,6 +5,10 @@
     "loggerFormat": "tiny",
     "session": {
       "store": "@foal/typeorm"
+    },
+    "jwt": {
+      "privateKey": "env(JWT_PRIVATE_KEY)",
+      "publicKey": "env(JWT_PUBLIC_KEY)"
     }
   },
   "database": {
