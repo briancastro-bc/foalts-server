@@ -1,22 +1,22 @@
 {
-  "port": "env(PORT)",
-  "settings": {
-    "debug": true,
-    "loggerFormat": "tiny",
-    "session": {
-      "store": "@foal/typeorm"
-    },
-    "jwt": {
-      "privateKey": "env(JWT_PRIVATE_KEY)",
-      "publicKey": "env(JWT_PUBLIC_KEY)"
-    }
-  },
-  "database": {
-    "type": "mysql",
-    "host": "localhost",
-    "port": 0,
-    "username": "env(DB_USERNAME)",
-    "password": "env(DB_PASSWORD)",
-    "database": "db_foal_jshop"
-  }
+	"port": "env(PORT)",
+	"settings": {
+		"debug": true,
+		"loggerFormat": "tiny",
+		"session": {
+			"store": "@foal/typeorm"
+		},
+		"jwt": {
+			"privateKey": "env(JWT_PRIVATE_KEY)",
+			"publicKey": "env(JWT_PUBLIC_KEY)"
+		}
+	},
+	"database": {
+		"type": "mysql",
+		"host": "localhost",
+		"port": 3306,
+		"username": "env(DB_USERNAME)",
+		"password": "env(DB_PASSWORD)",
+		"database": "db_foal_jshop"
+	}
 }

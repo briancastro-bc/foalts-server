@@ -1,23 +1,30 @@
 export const userSignupSchema: object = {
-    additionalProperties: false,
-    properties: {
-        email: { type: 'string', format: 'email' },
-        password: { type: 'string' },
-        name: { type: 'string' },
-        lastName: { type: 'string' },
-        phonePrefixCode: { type: 'string' },
-        cellphoneNumber: { type: 'string' }
-    },
-    required: ['email', 'password', 'name', 'lastName', 'phonePrefixCode', 'cellphoneNumber'],
-    type: 'object'
-}
+	additionalProperties: false,
+	properties: {
+		email: { type: "string", format: "email" },
+		password: { type: "string" },
+		name: { type: "string" },
+		lastName: { type: "string" },
+		phonePrefixCode: { type: "string" },
+		cellphoneNumber: { type: "string" },
+	},
+	required: [
+		"email",
+		"password",
+		"name",
+		"lastName",
+		"phonePrefixCode",
+		"cellphoneNumber",
+	],
+	type: "object",
+};
 
 export const userLoginSchema: object = {
-    addditionalProperties: false,
-    properties: {
-        email: { type: 'string', format: 'email' },
-        password: { type: 'string' }
-    },
-    required: ['email', 'password'],
-    type: 'object'
-}
+	addditionalProperties: false,
+	properties: {
+		email: { type: "string", format: "email" },
+		password: { type: "string" },
+	},
+	required: ["email", "password"],
+	type: "object",
+};
