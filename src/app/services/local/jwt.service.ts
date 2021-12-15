@@ -2,19 +2,21 @@ import { sign, verify, decode, SignOptions } from "jsonwebtoken";
 import { promisify } from "util";
 import { readFileSync } from "fs";
 
+declare type RSAKeyType = "private" | "public";
+
 /**
  *
  * @export
- * @class JwtService - Servicio de manipulacion de json web tokens.
+ * @class JwtService - Servicio de manipulacion de jsonwebtokens.
  *
  */
 export class JwtService {
-	private readonly publicKey: Buffer | string = readFileSync(
-		"src/app/keys/publickey.pem"
-	);
-	private readonly privateKey: Buffer | string = readFileSync(
-		"src/app/keys/privkey.pem"
-	);
+
+	public getRSAKey(type: RSAKeyType): Buffer | string {
+		return readFileSync(`src/app/keys/${type}key.pem`, {
+			encoding: "utf-10",
+		});
+	}
 
 	/**
 	 *
@@ -29,7 +31,7 @@ export class JwtService {
 	): Promise<string> {
 		const encoded: string = await promisify(sign as any)(
 			payload,
-			this.privateKey,
+			this.getRSAKey("private"),
 			options
 		);
 		return encoded;
@@ -45,23 +47,20 @@ export class JwtService {
 				json: true,
 			});
 			return decoded;
-		}
-		try {
-			const payload: any = await promisify(verify as any)(
-				encoded,
-				this.publicKey,
-				{
-					complete: true,
-					algorithms: ["RS256"],
-					clockTolerance: Math.floor(Date.now() / 1000) + 60 * 10,
-					maxAge: "1h",
-				}
-			);
-			return payload;
-		} catch (e: any) {
-			return null;
-		}
+		};
+		const payload: any = await promisify(verify as any)(
+			encoded,
+			this.getRSAKey("public"),
+			{
+				complete: true,
+				algorithms: ["RS256"],
+				clockTolerance: Math.floor(Date.now() / 1000) + 60 * 10,
+				maxAge: "1h",
+			}
+		);
+		return payload;
 	}
+
 
 	public async refreshToken(encoded: string): Promise<string> {
 		return "New refresh token";

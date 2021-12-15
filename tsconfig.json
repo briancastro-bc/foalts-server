@@ -16,8 +16,10 @@
 			// Aliases for imports
 			"@app/*": ["app/*"],
 			"@controllers/*": ["app/controllers/*"],
+			"@dto/*": ["app/dto/*"],
 			"@entities/*": ["app/entities/*"],
 			"@hooks/*": ["app/hooks/*"],
+			"@keys/*": ["app/keys/*"],
 			"@schemas/*": ["app/schemas/*"],
 			"@services/*": ["app/services/*"],
 		}

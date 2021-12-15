@@ -1,15 +1,16 @@
 import {
-	Context,
 	dependency,
 	HttpResponseBadRequest,
+	HttpResponseCreated,
 	HttpResponseOK,
 	HttpResponseUnauthorized,
 	verifyPassword,
 } from "@foal/core";
 import { isCommon } from "@foal/password";
 
-import { JwtService } from "..";
-import { User, Profile } from "../../entities";
+import { JwtService } from "@app/services";
+import { User } from "@app/entities";
+import { LoginDTO, SignupDTO } from "@app/dto";
 
 /**
  *
@@ -18,64 +19,70 @@ import { User, Profile } from "../../entities";
  *
  */
 export class AuthService {
-	public async login(email: string, password: string): Promise<any> {
+
+	@dependency
+	jwt: JwtService //TODO: ERROR
+
+	async login(loginDTO: LoginDTO): Promise<HttpResponseOK|HttpResponseUnauthorized> {
 		const user = await User.findOne({
-			email: email,
+			email: loginDTO.email,
 		});
 		if (!user)
 			return new HttpResponseUnauthorized({
 				message: "Wrong credentials",
 			});
-		if (!(await verifyPassword(password, user.password!)))
+		if (!(await verifyPassword(loginDTO.password, user.password)))
 			return new HttpResponseUnauthorized({
 				message: "Wrong credentials",
 			});
-		return user;
+		const token: string = await this.jwt.newToken(
+			{
+				iss: "bye-code.com",
+				sub: user.id,
+				iat: Math.floor(Date.now() / 1000) - 30,
+			},
+			{
+				algorithm: "RS256",
+				expiresIn: "15m",
+			}
+		);
+		return new HttpResponseOK({
+			token: token,
+		});
 	}
 
-	public async signup(
-		email: string,
-		password: string,
-		name: string,
-		lastName: string,
-		phonePrefixCode: string,
-		cellphoneNumber: string
-	): Promise<any> {
+	async signup(signupDTO: SignupDTO): Promise<HttpResponseCreated|HttpResponseBadRequest> {
 		let user = await User.findOne({
-			email: email,
+			email: signupDTO.email,
 		});
 		if (user)
 			return new HttpResponseBadRequest({
-				message: "This email is already registry",
+				message: "This email is already registered",
 			});
 		try {
-			let profile: Profile = new Profile();
 			user = new User();
-			user.email = email;
-			await user.setPassword(password);
-			user.name = name;
-			user.lastName = lastName;
-			profile.phonePrefixCode = phonePrefixCode;
-			profile.cellphoneNumber = cellphoneNumber;
-			profile.user = user;
-			user.profile = profile;
-
-			await profile.save();
+			user.email = signupDTO.email;
+			await user.setPassword(signupDTO.password);
+			user.name = signupDTO.name;
+			user.lastName = signupDTO.lastName;
 			await user.save();
-
-			return user;
+			return new HttpResponseCreated({
+				message: "user registered"
+			});
 		} catch (e: unknown) {
-			return new HttpResponseBadRequest({ message: "Error" });
+			return new HttpResponseBadRequest({ 
+				message: `Error: ${e}` 
+			});
 		}
 	}
 
-	public async sendAccountValidation(): Promise<void> {}
+	async sendAccountValidation(): Promise<void> {}
 
-	public async verifyAccount(): Promise<void> {}
+	async verifyAccount(): Promise<void> {}
 
-	public async recoveryPassword(): Promise<void> {}
+	async recoveryPassword(): Promise<void> {}
 
-	public createNewPassword(lenght: number = 8): string {
+	createNewPassword(lenght: number = 8): string {
 		const HEX_CHARACTERS: string = "1234567890abcdefABCDEF";
 		let generated_password: string = "";
 		for (let i = 0; i < lenght; i++) {

@@ -8,8 +8,6 @@ import {
 	PrimaryGeneratedColumn,
 } from "typeorm";
 
-import { Profile } from "./profile.entity";
-
 @Entity({
 	name: "users",
 })
@@ -58,12 +56,12 @@ export class User extends UserWithPermissions {
 	})
 	createdAt: Date;
 
-	@OneToOne(() => Profile, (profile) => profile.user, {
+	/*@OneToOne(() => Profile, (profile) => profile.user, {
 		primary: true,
 		nullable: true,
 	})
 	@JoinColumn()
-	profile: Profile;
+	profile: Profile;*/
 
 	async setPassword(password: string): Promise<void> {
 		this.password = await hashPassword(password);

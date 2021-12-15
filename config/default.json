@@ -17,6 +17,6 @@
 		"port": 3306,
 		"username": "env(DB_USERNAME)",
 		"password": "env(DB_PASSWORD)",
-		"database": "db_foal_jshop"
+		"database": "db_portofolio"
 	}
 }

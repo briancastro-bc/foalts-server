@@ -10,16 +10,14 @@ import {
 	HttpResponseCreated,
 } from "@foal/core";
 
-import { AuthService, JwtService } from "@app/services/index";
+import { AuthService } from "@app/services/index";
 import { userLoginSchema, userSignupSchema } from "@app/schemas/index";
 import { User } from "@app/entities/index";
 
 export class AuthController {
-	@dependency
-	authService: AuthService;
 
 	@dependency
-	jwtService: JwtService;
+	auth: AuthService;
 
 	@Get("/login")
 	viewLogin(ctx: Context) {
@@ -30,63 +28,16 @@ export class AuthController {
 	@ValidateBody(userLoginSchema, {
 		openapi: true,
 	})
-	async login(
-		ctx: Context<User>
-	): Promise<HttpResponseOK | HttpResponseUnauthorized> {
-		const user: User = await this.authService.login(
-			ctx.request.body.email,
-			ctx.request.body.password
-		);
-		if (!user)
-			return new HttpResponseUnauthorized({
-				message: "Wrong credentials",
-			});
-		const accessToken: string = await this.jwtService.newToken(
-			{
-				iss: "https://j-shop.com",
-				sub: user.id,
-				iat: Math.floor(Date.now() / 1000) - 30,
-			},
-			{
-				algorithm: "RS256",
-				expiresIn: "15m",
-			}
-		);
-		return new HttpResponseOK({ accessToken });
+	async login(ctx: Context<User>): Promise<HttpResponseOK|HttpResponseUnauthorized> {
+		return this.auth.login(ctx.request.body);
 	}
 
 	@Post("/signup")
 	@ValidateBody(userSignupSchema, {
 		openapi: true,
 	})
-	async signup(
-		ctx: Context<User>
-	): Promise<HttpResponseCreated | HttpResponseBadRequest> {
-		console.log(ctx.request.body.email);
-		const newUser: User = await this.authService.signup(
-			ctx.request.body.email,
-			ctx.request.body.password,
-			ctx.request.body.name,
-			ctx.request.body.lastName,
-			ctx.request.body.phonePrefixCode,
-			ctx.request.body.cellphoneNumber
-		);
-		if (!newUser)
-			return new HttpResponseBadRequest({
-				message: "E-mail exists or password is too common",
-			});
-		const accessToken: string = await this.jwtService.newToken(
-			{
-				iss: "https://j-shop.com",
-				sub: newUser.id,
-				iat: Math.floor(Date.now() / 1000) - 30,
-			},
-			{
-				algorithm: "RS256",
-				expiresIn: "15m",
-			}
-		);
-		return new HttpResponseCreated({ accessToken });
+	async signup(ctx: Context<User>): Promise<HttpResponseCreated|HttpResponseBadRequest> {
+		return await this.auth.signup(ctx.request.body);
 	}
 
 	@Post("/google")
